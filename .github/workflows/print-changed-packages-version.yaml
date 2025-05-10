@@ -1,7 +1,7 @@
 name: print-changed-packages-version
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
 
@@ -12,7 +12,7 @@ permissions:
 jobs:
   print-changed-packages:
     if: github.repository == 'creaticoding/assets-release-kit'
-    name: 변경된 패키지 버전 출력 및 코멘트
+    name: 변경된 패키지 버전 및 예상 버전 상승 출력
     runs-on: ubuntu-latest
 
     steps:
@@ -35,18 +35,22 @@ jobs:
       - name: 의존성 설치
         run: yarn install --silent
 
-      - name: 변경된 패키지 감지 및 PR 코멘트
+      - name: 변경 감지 및 예상 버전 상승 계산
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Progress 및 extra 로그 억제
+          # 로그 억제 옵션
           export YARN_ENABLE_INLINE_BUILDS=false
-          # 변경된 패키지를 JSON으로 추출 (실패 시 빈 배열)
-          CHANGED=$(yarn dlx -q lerna changed --json --long || echo "[]")
 
-          # 디버깅용 로그
+          # 변경된 패키지 목록 (JSON)
+          CHANGED=$(yarn dlx -q lerna changed --json --long || echo "[]")
           echo "Detected changed packages: $CHANGED"
+
+          # 예상 버전 상승 (dry-run JSON)
+          BUMP_PLAN=$(yarn dlx -q lerna version --conventional-commits --dry-run --yes --no-push --no-git-tag-version --json || echo "[]")
+          echo "Version bump plan: $BUMP_PLAN"
 
           # PR에 코멘트 작성
           gh pr comment ${{ github.event.pull_request.number }} \
-            --body $'### 📦 PR 기준 변경된 패키지 목록\n```json\n'"$CHANGED"$'\n```'
+            --body $'### 📦 PR 기준 변경된 패키지 목록\n```json\n'"$CHANGED"$'\n```\n\n'\
+                 $'### 🚀 예상 버전 상승\n```json\n'"$BUMP_PLAN"$'\n```'
