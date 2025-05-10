@@ -44,23 +44,12 @@ jobs:
 
           # 변경된 패키지 목록 (JSON)
           CHANGED=$(yarn dlx -q lerna changed --json --long || echo "[]")
-
           # 예상 버전 상승 (JSON 계획)
           BUMP_PLAN=$(yarn dlx -q lerna version --conventional-commits --yes --no-git-tag-version --no-push --json || echo "[]")
 
           # 댓글 본문 준비
-          BODY=$(cat <<EOF
-          ### 📦 PR 기준 변경된 패키지 목록
-          ```json
-          $CHANGED
-          ```
-
-          ### 🚀 예상 버전 상승
-          ```json
-          $BUMP_PLAN
-          ```
-          EOF
-          )
+          BODY=$(printf '### 📦 PR 기준 변경된 패키지 목록\n```json\n%s\n```\n\n### 🚀 예상 버전 상승\n```json\n%s\n```' "$CHANGED" "$BUMP_PLAN")
+          echo "Comment body:\n$BODY"
 
           # PR에 코멘트 작성
           gh pr comment ${{ github.event.pull_request.number }} --body "$BODY"
