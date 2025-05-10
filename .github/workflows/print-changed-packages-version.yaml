@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   print-changed-packages:
     if: github.repository == 'creaticoding/assets-release-kit'
@@ -12,10 +16,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout 코드
+      - name: PR 소스 브랜치 Checkout
         uses: actions/checkout@v3
         with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+
+      - name: main 브랜치 태그 및 커밋 가져오기
+        run: git fetch origin main --depth=1
 
       - name: Node.js 설정
         uses: actions/setup-node@v3
@@ -25,18 +35,16 @@ jobs:
       - name: 의존성 설치
         run: yarn install --silent
 
-      - name: main 브랜치 최신 태그 및 커밋 가져오기
-        run: git fetch origin main --depth=1
-
       - name: 변경된 패키지 감지 및 PR 코멘트
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          YARN_ENABLE_INLINE_BUILDS: false
         run: |
-          # 변경된 패키지를 JSON으로 얻기
-          CHANGED=$(yarn dlx --silent lerna changed --json --long || echo "[]")
+          # Progress 및 extra 로그 억제
+          export YARN_ENABLE_INLINE_BUILDS=false
+          # 변경된 패키지를 JSON으로 추출 (실패 시 빈 배열)
+          CHANGED=$(yarn dlx -q lerna changed --json --long || echo "[]")
 
-          # 변경 리스트 로그로 출력 (디버깅용)
+          # 디버깅용 로그
           echo "Detected changed packages: $CHANGED"
 
           # PR에 코멘트 작성
