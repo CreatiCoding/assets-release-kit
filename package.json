@@ -11,5 +11,8 @@
   ],
   "dependencies": {
     "typescript": "^5.8.1-rc"
+  },
+  "devDependencies": {
+    "lerna": "^8.2.2"
   }
 }

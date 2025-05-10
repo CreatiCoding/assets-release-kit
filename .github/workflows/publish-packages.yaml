@@ -1,0 +1,38 @@
+name: publish-packages
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    if: github.repository == 'creaticoding/assets-release-kit'
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set Node.js 22.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.x
+      - name: Yarn install
+        env:
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.DIVOPS_PACKAGES_NPM_TOKEN }}
+        run: |
+          yarn install
+          yarn npm whoami
+      - name: Lerna Publish Packages
+        env:
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.DIVOPS_PACKAGES_NPM_TOKEN }}
+        run: |
+          git config --local user.email "github-actions@users.noreply.github.com"
+          git config --local user.name "github-actions"
+          git switch main
+          git remote update
+          git reset --hard origin/main
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          yarn lerna version --conventional-commits --yes --git-remote origin
+          yarn lerna publish from-git --yes --concurrency=4
+          git push origin HEAD || echo "push할 것이 없습니다."
