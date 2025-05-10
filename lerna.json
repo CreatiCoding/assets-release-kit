@@ -7,6 +7,7 @@
   "npmClient": "yarn",
   "command": {
     "version": {
+      "conventionalCommits": true,
       "message": "chore(release): Publish libraries [skip ci]",
       "registry": "https://registry.npmjs.org/"
     },
