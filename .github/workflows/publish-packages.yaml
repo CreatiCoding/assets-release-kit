@@ -1,8 +1,19 @@
 name: publish-packages
+
 on:
   push:
     branches:
       - main
+    tags-ignore:
+      - 'v*'
+
+permissions:
+  contents: write   # 커밋, 태그, Release 생성
+  packages: read    # 패키지 조회
+
+concurrency:
+  group: publish-packages-main
+  cancel-in-progress: true
 
 jobs:
   publish:
@@ -33,6 +44,7 @@ jobs:
           git remote update
           git reset --hard origin/main
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          echo //registry.npmjs.org/:_authToken=${YARN_NPM_AUTH_TOKEN} | tee .npmrc $HOME/.npmrc > /dev/null
           yarn lerna version --conventional-commits --yes --git-remote origin
           yarn lerna publish from-git --yes --concurrency=4
-          git push origin HEAD || echo "push할 것이 없습니다."
+          git push --follow-tags origin HEAD || echo "push할 것이 없습니다."
