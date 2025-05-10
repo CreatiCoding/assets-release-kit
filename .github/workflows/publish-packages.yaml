@@ -30,13 +30,13 @@ jobs:
           node-version: 22.x
       - name: Yarn install
         env:
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.DIVOPS_PACKAGES_NPM_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.ARK_PACKAGES_NPM_TOKEN }}
         run: |
           yarn install
           yarn npm whoami
       - name: Lerna Publish Packages
         env:
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.DIVOPS_PACKAGES_NPM_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.ARK_PACKAGES_NPM_TOKEN }}
         run: |
           git config --local user.email "github-actions@users.noreply.github.com"
           git config --local user.name "github-actions"
