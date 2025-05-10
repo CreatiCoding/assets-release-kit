@@ -1,7 +1,10 @@
 {
   "name": "@assets-release-kit/foo-cli",
-  "version": "0.0.0",
+  "version": "0.3.0",
   "packageManager": "yarn@4.9.1",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "foo": "./bin/foo.js"
   }
