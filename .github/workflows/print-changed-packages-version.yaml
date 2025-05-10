@@ -46,11 +46,9 @@ jobs:
           CHANGED=$(yarn dlx -q lerna changed --json --long || echo "[]")
           echo "Detected changed packages: $CHANGED"
 
-          # 예상 버전 상승 (dry-run JSON)
-          BUMP_PLAN=$(yarn dlx -q lerna version --conventional-commits --dry-run --yes --no-push --no-git-tag-version --json || echo "[]")
+          # 예상 버전 상승 (JSON 계획)
+          BUMP_PLAN=$(yarn dlx -q lerna version --conventional-commits --yes --no-git-tag-version --no-push --json || echo "[]")
           echo "Version bump plan: $BUMP_PLAN"
 
           # PR에 코멘트 작성
-          gh pr comment ${{ github.event.pull_request.number }} \
-            --body $'### 📦 PR 기준 변경된 패키지 목록\n```json\n'"$CHANGED"$'\n```\n\n'\
-                 $'### 🚀 예상 버전 상승\n```json\n'"$BUMP_PLAN"$'\n```'
+          gh pr comment ${{ github.event.pull_request.number }} --body "$(printf '### 📦 PR 기준 변경된 패키지 목록\n```json\n%s\n```\n\n### 🚀 예상 버전 상승\n```json\n%s\n```' \"$CHANGED\" \"$BUMP_PLAN\")"
