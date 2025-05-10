@@ -23,6 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          token: ${{ secrets.PAT_TOKEN }}
           fetch-depth: 0
       - name: Set Node.js 22.x
         uses: actions/setup-node@v3
@@ -38,13 +39,27 @@ jobs:
         env:
           YARN_NPM_AUTH_TOKEN: ${{ secrets.ARK_PACKAGES_NPM_TOKEN }}
         run: |
+          set -eux
+
           git config --local user.email "github-actions@users.noreply.github.com"
           git config --local user.name "github-actions"
+
           git switch main
           git remote update
           git reset --hard origin/main
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-          echo //registry.npmjs.org/:_authToken=${YARN_NPM_AUTH_TOKEN} | tee .npmrc $HOME/.npmrc > /dev/null
-          yarn lerna version --conventional-commits --yes --git-remote origin
-          yarn lerna publish from-git --yes --concurrency=4
-          git push --follow-tags origin HEAD || echo "push할 것이 없습니다."
+
+          # 여기서 “태그 없으면 무시” 처리
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/* || echo "No tags to fetch."
+
+          echo "//registry.npmjs.org/:_authToken=${YARN_NPM_AUTH_TOKEN}" \
+            | tee .npmrc $HOME/.npmrc > /dev/null
+
+          yarn lerna version --conventional-commits --yes \
+            --git-remote origin --loglevel verbose
+
+          yarn lerna publish from-git --yes --concurrency=4 \
+            --loglevel verbose \
+            || echo "No new publishable packages."
+
+          git push --follow-tags origin HEAD \
+            || echo "push할 것이 없습니다."
