@@ -1,0 +1,15 @@
+{
+  "name": "@assets-release-kit/main",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@creaticoding:creaticoding/assets-release-kit",
+  "author": "정석호 <nodejsdeveloper@kakao.com>",
+  "license": "MIT",
+  "packageManager": "yarn@4.9.1",
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "typescript": "^5.8.1-rc"
+  }
+}
