@@ -26,17 +26,14 @@ jobs:
         run: yarn install
 
       - name: main 브랜치 최신 태그 및 커밋 가져오기
-        run: |
-          git fetch origin main --depth=1
-
-      - name: 변경된 패키지 목록 계산
-        id: changed
-        run: |
-          echo "changed=$(yarn dlx lerna changed --json --long)" >> $GITHUB_OUTPUT
+        run: git fetch origin main --depth=1
 
       - name: PR에 변경 패키지 코멘트 남기기
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CHANGED_PACKAGES: ${{ steps.changed.outputs.changed }}
         run: |
-          gh pr comment ${{ github.event.pull_request.number }} --body $'### 📦 PR 기준 변경된 패키지 목록\n```json\n${CHANGED_PACKAGES}\n```'
+          # progress 출력 제거 및 JSON만 추출
+          CHANGED=$(yarn dlx --silent lerna changed --json --long)
+          
+          # PR에 코멘트 작성
+          gh pr comment ${{ github.event.pull_request.number }} --body $'### 📦 PR 기준 변경된 패키지 목록\n```json\n'"$CHANGED"$'\n```'
