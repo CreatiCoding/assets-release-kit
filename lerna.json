@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/lerna/lerna/refs/heads/main/packages/lerna/schemas/lerna-schema.json",
+  "version": "independent",
+  "packages": [
+    "packages/*"
+  ],
+  "npmClient": "yarn",
+  "command": {
+    "version": {
+      "message": "chore(release): Publish libraries [skip ci]",
+      "registry": "https://registry.npmjs.org/"
+    },
+    "publish": {
+      "registry": "https://registry.npmjs.org/"
+    }
+  },
+  "ignoreChanges": [
+    "**/jest.setup.ts",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/*.stories.*",
+    "**/__storybook__/*",
+    "**/*.md",
+    "**/*.yaml",
+    "**/CHANGELOG.md",
+    ".npmrc"
+  ]
+}
