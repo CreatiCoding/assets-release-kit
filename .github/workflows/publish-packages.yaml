@@ -57,6 +57,11 @@ jobs:
           yarn lerna version --conventional-commits --yes \
             --git-remote origin --loglevel verbose
 
+          yarn lerna ls --since HEAD^ --json | jq -r '.[].location' | sed "s#^$(npm prefix)#.#" | while read -r packagePath; do
+            echo packagePath: $packagePath
+            yarn cli:postpack $packagePath
+          done
+
           yarn lerna publish from-git --yes --concurrency=4 \
             --loglevel verbose \
             || echo "No new publishable packages."
