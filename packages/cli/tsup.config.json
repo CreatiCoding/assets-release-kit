@@ -1,0 +1,14 @@
+{
+    "entryPoints": [
+        "src/index.ts",
+        "src/cli.ts"
+    ],
+    "format": [
+        "esm",
+        "cjs"
+    ],
+    "dts": true,
+    "splitting": false,
+    "sourcemap": false,
+    "clean": true
+}

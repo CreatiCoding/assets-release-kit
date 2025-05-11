@@ -1,0 +1,47 @@
+{
+  "name": "@assets-release-kit/cli",
+  "packageManager": "yarn@4.9.1",
+  "version": "0.0.0",
+  "type": "module",
+  "bin": {
+    "ark-cli": "./bin/cli-dev.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.ts",
+      "require": "./src/index.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "bin": {
+      "ark-cli": "./dist/cli.js"
+    },
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      },
+      "./package.json": "./package.json"
+    }
+  },
+  "dependencies": {
+    "clipanion": "^4.0.0-rc.4",
+    "execa": "^8.0.1",
+    "tsx": "^4.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "execa": "^9.5.2",
+    "tsc": "^2.0.4",
+    "tsup": "^8.4.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.1-rc"
+  },
+  "scripts": {
+    "build": "tsup"
+  }
+}
