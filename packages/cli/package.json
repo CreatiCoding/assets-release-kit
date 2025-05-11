@@ -1,7 +1,7 @@
 {
   "name": "@assets-release-kit/cli",
   "packageManager": "yarn@4.9.1",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "bin": {
     "ark-cli": "./bin/cli-dev.js"
