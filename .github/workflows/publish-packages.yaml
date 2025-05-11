@@ -38,6 +38,7 @@ jobs:
       - name: Lerna Publish Packages
         env:
           YARN_NPM_AUTH_TOKEN: ${{ secrets.ARK_PACKAGES_NPM_TOKEN }}
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           set -eux
 
@@ -56,6 +57,13 @@ jobs:
 
           yarn lerna version --conventional-commits --yes \
             --git-remote origin --loglevel verbose
+
+          yarn lerna ls --since HEAD^ --json | jq -r '.[].location' | sed "s#^$(npm prefix)#.#" | while read -r packagePath; do
+            echo packagePath: $packagePath
+            yarn cli:postpack $packagePath
+          done
+
+          yarn
 
           yarn lerna publish from-git --yes --concurrency=4 \
             --loglevel verbose \
