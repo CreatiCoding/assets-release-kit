@@ -1,0 +1,12 @@
+{
+  "name": "ark-cli",
+  "version": "0.0.0",
+  "packageManager": "yarn@4.9.1",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": "./bin/index.js",
+  "dependencies": {
+    "@assets-release-kit/cli": "^0.0.0"
+  }
+}

@@ -14,5 +14,8 @@
   },
   "devDependencies": {
     "lerna": "^8.2.2"
+  },
+  "scripts": {
+    "cli:postpack": "./scripts/overridePublishConfig.sh"
   }
 }

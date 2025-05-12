@@ -57,9 +57,20 @@ jobs:
           yarn lerna version --conventional-commits --yes \
             --git-remote origin --loglevel verbose
 
+          git push --follow-tags origin HEAD \
+            || echo "push할 것이 없습니다."
+
+          yarn lerna ls --since HEAD^ --json | jq -r '.[].location' | sed "s#^$(npm prefix)#.#" | while read -r packagePath; do
+            echo packagePath: $packagePath
+            yarn cli:postpack $packagePath
+          done
+
+          echo "YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install --no-immutable"
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install --no-immutable
+
+          git add -A
+          git commit -m "chore: update packages"
+
           yarn lerna publish from-git --yes --concurrency=4 \
             --loglevel verbose \
             || echo "No new publishable packages."
-
-          git push --follow-tags origin HEAD \
-            || echo "push할 것이 없습니다."
