@@ -5,7 +5,7 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@assets-release-kit/cli@npm:^0.1.0, @assets-release-kit/cli@workspace:packages/cli":
+"@assets-release-kit/cli@npm:^0.1.1, @assets-release-kit/cli@workspace:packages/cli":
   version: 0.0.0-use.local
   resolution: "@assets-release-kit/cli@workspace:packages/cli"
   dependencies:
@@ -1363,7 +1363,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ark-cli@workspace:packages/ark-cli"
   dependencies:
-    "@assets-release-kit/cli": "npm:^0.1.0"
+    "@assets-release-kit/cli": "npm:^0.1.1"
   bin:
     ark-cli: ./bin/index.js
   languageName: unknown
